@@ -1,0 +1,18 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+env/
+
+# Flask
+instance/
+*.sqlite
+
+# IDE
+.vscode/
+.idea/

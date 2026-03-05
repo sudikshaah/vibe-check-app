@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VibeCheck ✨ — AI Playlist Generator</title>
+    <meta name="description" content="Describe your mood and get a curated 5-song playlist powered by AI." />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #0a0a0f;
+            min-height: 100vh;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #a78bfa, #ec4899, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .glow-btn {
+            background: linear-gradient(135deg, #7c3aed, #db2777);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+        }
+
+        .glow-btn:hover:not(:disabled) {
+            box-shadow: 0 0 35px rgba(124, 58, 237, 0.7);
+            transform: translateY(-1px);
+        }
+
+        .glow-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .textarea-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            resize: none;
+        }
+
+        .textarea-field:focus {
+            outline: none;
+            border-color: rgba(167, 139, 250, 0.6);
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
+        }
+
+        .song-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeSlideIn 0.5s ease forwards;
+        }
+
+        .song-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(167, 139, 250, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(124, 58, 237, 0.15);
+        }
+
+        @keyframes fadeSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #a78bfa;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.3);
+            }
+        }
+
+        .track-number {
+            background: linear-gradient(135deg, #7c3aed, #db2777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Ambient glow orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body class="text-white relative">
+
+    <!-- Ambient background orbs -->
+    <div class="orb w-96 h-96 bg-purple-600 -top-20 -left-20"></div>
+    <div class="orb w-80 h-80 bg-pink-600 top-1/2 -right-20"></div>
+    <div class="orb w-64 h-64 bg-violet-500 bottom-0 left-1/3"></div>
+
+    <div class="relative z-10 max-w-2xl mx-auto px-4 py-16">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="pulse-dot"></div>
+                <span class="text-xs font-semibold tracking-widest text-purple-400 uppercase">AI Music Curator</span>
+                <div class="pulse-dot"></div>
+            </div>
+            <h1 class="text-6xl font-extrabold mb-3 gradient-text leading-tight">VibeCheck</h1>
+            <p class="text-gray-400 text-lg font-light">Describe your mood. Get your perfect soundtrack.</p>
+        </div>
+
+        <!-- Input Card -->
+        <div class="glass-card rounded-2xl p-6 mb-6">
+            <label for="vibe-input" class="block text-sm font-medium text-purple-300 mb-3 tracking-wide">
+                🎭 What's your vibe right now?
+            </label>
+            <textarea id="vibe-input"
+                class="textarea-field w-full rounded-xl p-4 text-white placeholder-gray-500 text-base leading-relaxed"
+                rows="4"
+                placeholder="e.g. 'I'm feeling like a main character in a 90s movie' or 'just won a marathon and I'm on top of the world'..."
+                maxlength="500"></textarea>
+            <div class="flex justify-between items-center mt-2">
+                <span id="char-count" class="text-xs text-gray-600">0 / 500</span>
+                <span class="text-xs text-gray-600">Be as expressive as you want ✨</span>
+            </div>
+        </div>
+
+        <!-- Generate Button -->
+        <button id="generate-btn"
+            class="glow-btn w-full py-4 rounded-xl text-white font-semibold text-base flex items-center justify-center gap-3"
+            onclick="generatePlaylist()">
+            <span id="btn-icon">🎵</span>
+            <span id="btn-text">Generate My Playlist</span>
+        </button>
+
+        <!-- Error Message -->
+        <div id="error-box"
+            class="hidden mt-4 glass-card rounded-xl p-4 border border-red-500/20 text-red-400 text-sm text-center">
+        </div>
+
+        <!-- Playlist Output -->
+        <div id="playlist-section" class="hidden mt-10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
+                <h2 class="text-sm font-semibold tracking-widest text-purple-400 uppercase">Your Playlist</h2>
+                <div class="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
+            </div>
+            <div id="songs-container" class="space-y-3"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const vibeInput = document.getElementById('vibe-input');
+        const charCount = document.getElementById('char-count');
+        const generateBtn = document.getElementById('generate-btn');
+        const btnIcon = document.getElementById('btn-icon');
+        const btnText = document.getElementById('btn-text');
+        const errorBox = document.getElementById('error-box');
+        const playlistSection = document.getElementById('playlist-section');
+        const songsContainer = document.getElementById('songs-container');
+
+        vibeInput.addEventListener('input', () => {
+            charCount.textContent = `${vibeInput.value.length} / 500`;
+        });
+
+        async function generatePlaylist() {
+            const vibe = vibeInput.value.trim();
+            if (!vibe) {
+                showError('Tell me your vibe first! 😅 Type something in the box above.');
+                return;
+            }
+
+            // Loading state
+            setLoading(true);
+            hideError();
+            playlistSection.classList.add('hidden');
+            songsContainer.innerHTML = '';
+
+            try {
+                const res = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ vibe }),
+                });
+
+                const data = await res.json();
+                console.log('[VibeCheck] API response:', data);
+
+                if (!res.ok || data.error) {
+                    console.error('[VibeCheck] Error from server:', data.error, '| HTTP status:', res.status);
+                    showError(data.error || 'Something went wrong. Please try again.');
+                    return;
+                }
+
+                renderPlaylist(data.songs);
+
+            } catch (err) {
+                showError('Network error — are you connected to the internet?');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function renderPlaylist(songs) {
+            songsContainer.innerHTML = '';
+            playlistSection.classList.remove('hidden');
+
+            songs.forEach((song, i) => {
+                const delay = i * 100;
+                const card = document.createElement('div');
+                card.className = 'song-card rounded-xl p-5';
+                card.style.animationDelay = `${delay}ms`;
+                card.innerHTML = `
+          <div class="flex items-start gap-4">
+            <span class="track-number text-2xl font-extrabold mt-0.5 w-7 shrink-0">${String(i + 1).padStart(2, '0')}</span>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-white font-bold text-lg leading-snug truncate">${escapeHtml(song.title)}</h3>
+              <p class="text-purple-300 text-sm font-medium mb-2">${escapeHtml(song.artist)}</p>
+              <p class="text-gray-400 text-sm leading-relaxed italic">"${escapeHtml(song.reason)}"</p>
+            </div>
+            <span class="text-xl shrink-0 mt-0.5">🎧</span>
+          </div>
+        `;
+                songsContainer.appendChild(card);
+            });
+        }
+
+        function setLoading(isLoading) {
+            generateBtn.disabled = isLoading;
+            if (isLoading) {
+                btnIcon.innerHTML = '<div class="spinner"></div>';
+                btnText.textContent = 'Curating your vibe...';
+            } else {
+                btnIcon.textContent = '🎵';
+                btnText.textContent = 'Generate My Playlist';
+            }
+        }
+
+        function showError(msg) {
+            errorBox.textContent = msg;
+            errorBox.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorBox.classList.add('hidden');
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        // Allow Ctrl+Enter to submit
+        vibeInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) generatePlaylist();
+        });
+    </script>
+</body>
+
+</html>
