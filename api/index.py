@@ -12,6 +12,7 @@ from google import genai
 from google.genai import types
 
 app = Flask(__name__)
+app.debug = False
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
@@ -105,7 +106,3 @@ def generate():
         return jsonify({"error": "Could not parse the AI's response. Please try again."}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
