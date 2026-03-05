@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Echo — Minimalist Music Discovery</title>
-    <meta name="description" content="A curated echo for your current state." />
+    <title>Noctra — Minimalist Music Discovery</title>
+    <meta name="description" content="A curated musical atmosphere for your current state." />
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Using Playfair Display as a high-end serif and Inter for body text -->
     <link
@@ -36,26 +36,26 @@
             font-family: 'Playfair Display', serif;
         }
 
-        /* 1 & 2. Enhanced CSS Animation: Breathe (Pulse) */
+        /* 1 & 2. Enhanced CSS Animation: Breathe (Pulse) - Heartbeat pattern */
         @keyframes breathe {
             0% {
-                text-shadow: 0 0 10px rgba(244, 244, 246, 0.4);
-                transform: scale(1);
+                text-shadow: 0 0 15px rgba(244, 244, 246, 0.4);
+                transform: scale(0.98);
             }
 
             50% {
-                text-shadow: 0 0 30px var(--accent);
-                transform: scale(1.02);
+                text-shadow: 0 0 45px var(--accent), 0 0 20px var(--accent);
+                transform: scale(1.04);
             }
 
             100% {
-                text-shadow: 0 0 10px rgba(244, 244, 246, 0.4);
-                transform: scale(1);
+                text-shadow: 0 0 15px rgba(244, 244, 246, 0.4);
+                transform: scale(0.98);
             }
         }
 
-        .echo-title {
-            animation: breathe 4s ease-in-out infinite;
+        .noctra-title {
+            animation: breathe 2.5s ease-in-out infinite;
             letter-spacing: -0.02em;
         }
 
@@ -71,21 +71,24 @@
         .minimal-input:hover,
         .minimal-input:focus {
             outline: none;
-            border-color: rgba(161, 101, 238, 0.6);
-            box-shadow: 0 0 20px rgba(161, 101, 238, 0.4);
+            border-color: #F5F5F5;
+            box-shadow: 0 0 30px #2D033B, 0 0 10px rgba(255, 255, 255, 0.1);
             background-color: rgba(255, 255, 255, 0.05);
         }
 
         .minimal-btn {
-            background: var(--text-cloud-dancer);
-            color: #050812;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-cloud-dancer);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .minimal-btn:hover:not(:disabled) {
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(244, 244, 246, 0.15);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
         }
 
         .minimal-btn:disabled {
@@ -142,8 +145,9 @@
 
         <!-- Header -->
         <header class="text-center mb-16 mt-8">
-            <h1 class="echo-title text-5xl md:text-7xl font-semibold mb-4 text-white inline-block">Echo</h1>
-            <p class="text-[var(--text-muted)] text-sm md:text-base font-light tracking-wide">A curated echo for your
+            <h1 class="noctra-title text-5xl md:text-7xl font-semibold mb-4 text-white inline-block">Noctra</h1>
+            <p class="text-[var(--text-muted)] text-sm md:text-base font-light tracking-wide">A curated musical
+                atmosphere for your
                 current state.</p>
         </header>
 
@@ -171,7 +175,7 @@
 
         <!-- Playlist Output -->
         <div id="playlist-section" class="hidden">
-            <h2 class="serif text-2xl font-semibold mb-8 text-center italic">Your Echo</h2>
+            <h2 class="serif text-2xl font-semibold mb-8 text-center italic">Your Noctra</h2>
             <div id="songs-container" class="space-y-2"></div>
         </div>
 
@@ -182,7 +186,7 @@
         <p class="text-[var(--text-muted)] text-[11px] uppercase tracking-widest leading-relaxed max-w-xl mx-auto">
             Curated by a Designer &amp; Coffee Addict.<br />
             Sucker for underrated books, local artists, and the silence of white tulips.<br />
-            Built on Echo 2026.
+            Built on Noctra 2026.
         </p>
     </footer>
 
@@ -215,10 +219,10 @@
                 });
 
                 const data = await res.json();
-                console.log('[Echo] API response:', data);
+                console.log('[Noctra] API response:', data);
 
                 if (!res.ok || data.error) {
-                    console.error('[Echo] Error from server:', data.error, '| HTTP status:', res.status);
+                    console.error('[Noctra] Error from server:', data.error, '| HTTP status:', res.status);
                     showError(data.error || 'The silence is deafening. Please try again.');
                     return;
                 }
