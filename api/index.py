@@ -11,7 +11,8 @@ load_dotenv()
 from google import genai
 from google.genai import types
 
-app = Flask(__name__)
+# Set template path relatively since this file is inside /api
+app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.debug = False
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -21,18 +22,18 @@ if not GEMINI_API_KEY:
 # Initialize the 2026 client
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-SYSTEM_PROMPT = """You are VibeCheck, an expert music curator with an encyclopedic knowledge of songs across all genres and eras.
-Your job is to analyse a user's mood or vibe description and recommend exactly 5 REAL, well-known songs that perfectly match that energy.
+SYSTEM_PROMPT = """You are Echo, a minimalist and poetic music curator.
+Your job is to analyse a user's fleeting mood, feeling, or memory and return exactly 5 REAL, artistically suited songs that form a sonic mirror to their state.
 
 Rules:
-- Only recommend songs that genuinely exist.
-- Pick songs that truly match the described feeling, not just popular hits.
-- Be creative and specific in your "reason" - explain WHY this song fits the vibe in 1-2 vivid sentences.
-- Respond ONLY with a valid JSON array. No extra text, no markdown code fences.
+- Only recommend real songs that genuinely exist.
+- Choose tracks with depth, focusing on mood and texture rather than just popular hits.
+- Be deeply poetic but brief in your "reason" - explain why the song fits in 1-2 evocative, striking sentences.
+- Respond ONLY with a valid JSON array. No extra text, no markdown.
 
 Response format (strict JSON array):
 [
-  {"title": "Song Name", "artist": "Artist Name", "reason": "Why this song fits the vibe."},
+  {"title": "Song Title", "artist": "Artist", "reason": "A poetic reflection on why this song echoes their state."},
   ...
 ]
 """
@@ -106,3 +107,6 @@ def generate():
         return jsonify({"error": "Could not parse the AI's response. Please try again."}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+if __name__ == "__main__":
+    app.run(port=5000)
