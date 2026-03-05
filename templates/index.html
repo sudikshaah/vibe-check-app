@@ -136,6 +136,50 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 8, 18, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .coffee-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px var(--accent));
+        }
     </style>
 </head>
 
@@ -181,6 +225,21 @@
 
     </main>
 
+    <!-- Capacity Modal -->
+    <div id="capacity-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="coffee-icon">☕</div>
+            <h3 class="serif text-2xl text-white mb-4">Over-Inspired</h3>
+            <p class="text-gray-300 font-light leading-relaxed mb-8">
+                Noctra is currently over-inspired. Please take a sip of coffee and try again in a moment.
+            </p>
+            <button onclick="hideCapacityModal()"
+                class="minimal-btn px-8 py-2 rounded-full text-xs font-medium tracking-widest uppercase">
+                Got it
+            </button>
+        </div>
+    </div>
+
     <!-- 2. The Footer Upgrade -->
     <footer class="py-12 px-6 text-center border-t border-gray-800/50 mt-auto">
         <p class="text-[var(--text-muted)] text-[11px] uppercase tracking-widest leading-relaxed max-w-xl mx-auto">
@@ -221,6 +280,11 @@
                 const data = await res.json();
                 console.log('[Noctra] API response:', data);
 
+                if (res.status === 503) {
+                    showCapacityModal();
+                    return;
+                }
+
                 if (!res.ok || data.error) {
                     console.error('[Noctra] Error from server:', data.error, '| HTTP status:', res.status);
                     showError(data.error || 'The silence is deafening. Please try again.');
@@ -234,6 +298,14 @@
             } finally {
                 setLoading(false);
             }
+        }
+
+        function showCapacityModal() {
+            document.getElementById('capacity-modal').classList.add('active');
+        }
+
+        function hideCapacityModal() {
+            document.getElementById('capacity-modal').classList.remove('active');
         }
 
         function renderPlaylist(songs) {

@@ -105,7 +105,9 @@ def generate():
     except json.JSONDecodeError:
         return jsonify({"error": "Could not parse the AI's response. Please try again."}), 500
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        error_msg = str(e)
+        status_code = 503 if "503" in error_msg else 500
+        return jsonify({"error": error_msg}), status_code
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
