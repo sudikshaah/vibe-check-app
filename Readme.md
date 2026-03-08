@@ -4,7 +4,7 @@ Your vibe, reflected in sound.
 Noctra is a minimalist AI discovery tool that translates fleeting thoughts and complex moods into curated musical atmospheres. It’s designed for the "nocturnal creator"—those who find inspiration in underrated books, dark roast coffee, and the silence of white tulips.
 
 🎨Design Philosophy
-The "Plum Noir" Aesthetic: A custom radial gradient ($#2D033B \rightarrow #050812$) that provides a deep, velvety backdrop for late-night sessions.
+The "Plum Noir" Aesthetic: A custom radial gradient (HEX-2D033B \rightarrow HEX-050812) that provides a deep, velvety backdrop for late-night sessions.
 Breathing Typography: A rhythmic CSS pulse on the "Noctra" serif title that mimics a steady heartbeat or an echo.
 The Tulip Glow: A high-contrast interaction where the input area glows "Soft White" upon focus, inspired by the elegance of white tulips.
 
@@ -24,4 +24,4 @@ Clone: git clone https://github.com/sudikshaah/noctra-mood.git
 
 Environment: Add your GEMINI_API_KEY to Vercel.
 
-Live: Visit- noctra-mood.vercel.app.
+Live: Visit- noctra-mood.vercel.app
