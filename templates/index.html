@@ -180,6 +180,68 @@
             display: inline-block;
             filter: drop-shadow(0 0 10px var(--accent));
         }
+
+        /* Playback UI */
+        .playback-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .playback-btn {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            padding: 8px;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-cloud-dancer);
+        }
+
+        .playback-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .playback-btn.spotify:hover {
+            border-color: #1DB954;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.3);
+        }
+
+        .playback-btn.youtube:hover {
+            border-color: #FF0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        }
+
+        /* Micro Tooltip */
+        .playback-btn::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s ease;
+            z-index: 10;
+        }
+
+        .playback-btn:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 
@@ -322,11 +384,24 @@
           <div class="md:w-1/3 flex-shrink-0">
             <h3 class="serif text-white text-lg">${escapeHtml(song.title)}</h3>
             <p class="text-[var(--text-muted)] text-sm tracking-wide uppercase mt-1">${escapeHtml(song.artist)}</p>
+            <div class="playback-container">
+              <button class="playback-btn spotify" data-tooltip="Open in Spotify" onclick="handleSpotifyLink('${encodeURIComponent(song.title + ' ' + song.artist)}')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.494 17.306c-.215.353-.675.465-1.028.249-2.85-1.741-6.439-2.135-10.666-1.168-.403.093-.81-.159-.903-.562-.093-.404.159-.81.562-.903 4.629-1.059 8.583-.604 11.782 1.348.354.217.465.676.253 1.036zm1.468-3.26c-.27.44-.846.579-1.286.309-3.262-2.004-8.23-2.585-12.083-1.413-.497.151-1.021-.131-1.171-.628-.151-.497.13-1.021.628-1.171 4.398-1.332 9.878-.684 13.618 1.614.441.27.579.846.309 1.286-.015.024-.015.024-.015.024zm.127-3.414c-3.914-2.324-10.372-2.539-14.135-1.398-.6.182-1.233-.163-1.415-.762-.182-.6.163-1.233.762-1.415 4.307-1.307 11.439-1.042 15.94 1.628.539.32.715 1.018.395 1.557-.319.539-1.015.714-1.547.39z"/>
+                </svg>
+              </button>
+              <button class="playback-btn youtube" data-tooltip="Search YouTube" onclick="handleYouTubeLink('${encodeURIComponent(song.title + ' ' + song.artist)}')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+              </button>
+            </div>
           </div>
           <div class="md:w-2/3">
             <p class="text-gray-300 text-sm font-light leading-relaxed">"${escapeHtml(song.reason)}"</p>
           </div>
         `;
+
                 songsContainer.appendChild(card);
             });
         }
@@ -356,6 +431,28 @@
             div.appendChild(document.createTextNode(str));
             return div.innerHTML;
         }
+
+        function handleSpotifyLink(query) {
+            const spotifyUri = `spotify:search:${query}`;
+            const webSearch = `https://open.spotify.com/search/${query}`;
+
+            // Try to launch the Spotify app
+            window.location.href = spotifyUri;
+
+            // Set a fallback timeout
+            setTimeout(() => {
+                // If document still has focus, it means the app didn't open
+                if (document.hasFocus()) {
+                    window.open(webSearch, '_blank');
+                }
+            }, 2000);
+        }
+
+        function handleYouTubeLink(query) {
+            const youtubeSearch = `https://www.youtube.com/results?search_query=${query}`;
+            window.open(youtubeSearch, '_blank');
+        }
+
 
         vibeInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.ctrlKey) generatePlaylist();
