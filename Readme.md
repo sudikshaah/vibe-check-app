@@ -20,7 +20,7 @@ Smart Playback:
 Architecture: Built with Python (Flask) and optimized for Vercel Serverless Functions to ensure 100% uptime with zero cost.
 
 🚀 Deployment
-Clone: git clone https://github.com/sudikshaah/noctra-mood.git
+Clone: git clone https://github.com/your-username/noctra-mood.git
 
 Environment: Add your GEMINI_API_KEY to Vercel.
 
