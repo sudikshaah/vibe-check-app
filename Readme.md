@@ -1,4 +1,4 @@
-  **Noctra **🌙
+   Noctra🌙
 
 Your vibe, reflected in sound.
 Noctra is a minimalist AI discovery tool that translates fleeting thoughts and complex moods into curated musical atmospheres. It’s designed for the "nocturnal creator"—those who find inspiration in underrated books, dark roast coffee, and the silence of white tulips.
